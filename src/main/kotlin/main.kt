@@ -11,23 +11,29 @@ import kotlin.random.*
 import kotlin.math.*
 
 
+val day = document.getElementById("day-text")
 val immune = document.getElementById("immune-text")
 val infected = document.getElementById("infected-text")
+val healthy = document.getElementById("healthy-text")
 val total = document.getElementById("total-text")
+val maxr = document.getElementById("maxr") as HTMLInputElement
+val maxrOutput = document.getElementById("maxrOutput") as HTMLOutputElement
 val percentStaticPopulation = document.getElementById("percentStaticPopulation") as HTMLInputElement
 val percentStaticPopulationOutput = document.getElementById("percentStaticPopulationOutput") as HTMLOutputElement
 val reimportInfectionDays = document.getElementById("reimportInfectionDays") as HTMLInputElement
 val reimportInfectionDaysOutput = document.getElementById("reimportInfectionDaysOutput") as HTMLOutputElement
 val imunityLength = document.getElementById("imunityLength") as HTMLInputElement
 val imunityLengthOutput = document.getElementById("imunityLengthOutput") as HTMLOutputElement
+val transmissionProbability = document.getElementById("transmissionProbability") as HTMLInputElement
+val transmissionProbabilityOutput = document.getElementById("transmissionProbabilityOutput") as HTMLOutputElement
 
 val canvas = initializeCanvas()
 fun initializeCanvas(): HTMLCanvasElement {
     val div = document.getElementById("balls-container")
     val canvas = document.createElement("canvas") as HTMLCanvasElement
     val context = canvas.getContext("2d") as CanvasRenderingContext2D
-    context.canvas.width = window.innerWidth / 2
-    context.canvas.height = (window.innerHeight / 10) * 8
+    context.canvas.width = 600
+    context.canvas.height = 600
     div!!.appendChild(canvas)
     return canvas
 }
@@ -69,17 +75,23 @@ fun main(args: Array<String>) {
 }
 
 fun updateSettings() {
+    maxrOutput.textContent = maxr.value
+    world.maxR = maxr.value.toInt()
     percentStaticPopulationOutput.textContent = percentStaticPopulation.value + "%"
     world.staticPopulationPercent = percentStaticPopulation.value.toInt()
     reimportInfectionDaysOutput.textContent = reimportInfectionDays.value + " days"
     world.imporInfectedAfterDays = reimportInfectionDays.value.toInt()
     imunityLengthOutput.textContent = imunityLength.value + " weeks"
-    //world.staticPopulationPercent = percentStaticPopulation.value.toInt()
+    world.imunityLength = imunityLength.value.toDouble() * 7
+    transmissionProbabilityOutput.textContent = (transmissionProbability.value.toDouble() / 100).toString()
+    world.infectionProbilityPerCollision = transmissionProbability.value.toDouble() / 100
 }
 
 fun updateStats() {
+    day!!.textContent = "Day total: " + world.totalTime.toInt().toString()
     infected!!.textContent = "Infected people: " + world.infected.toString()
     immune!!.textContent = "Immune people: " + world.immune.toString()
+    healthy!!.textContent = "Healthy people: " + (world.humans.size - world.infected - world.immune).toString()
     total!!.textContent = "Total people: " + world.humans.size.toString()
 }
 
@@ -118,18 +130,18 @@ fun clear() {
 }
 
 fun generateData() {
-    for (i in 1 until 10)
-        for (j in 1 until 10) {
-            val dx = Random.nextDouble(-1.0, 1.0) * 10
-            val dy = Random.nextDouble(-1.0, 1.0) * 10
+    for (i in 1 until 11)
+        for (j in 1 until 11) {
+            val dx = Random.nextDouble(-1.0, 1.0) * 5
+            val dy = Random.nextDouble(-1.0, 1.0) * 5
             val human = Human(
-                i * 70.0,
-                150 + (j * 70.0),
+                10 + (i * width / 11).toDouble(),
+                10 + (j * height / 11).toDouble(),
+                dx * Random.nextDouble(1.0, 9.0),
+                dy * Random.nextDouble(1.0, 9.0),
                 dx,
                 dy,
-                dx,
-                dy,
-                18.0,
+                15.0,
                 1.0
             )
             world.humans.add(human)

@@ -18,6 +18,36 @@
     display: inline-block;
 }
 
+.dot-green {
+  height: 10px;
+  width: 10px;
+  margin-right: 3px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display:inline-block;
+}
+.info-text-inline{
+    display: inline-block;
+}
+
+.dot-red {
+  height: 10px;
+  width: 10px;
+  margin-right: 3px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display:inline-block;
+}
+
+.dot-blue {
+  height: 10px;
+  width: 10px;
+  margin-right: 3px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display:inline-block;
+}
+
 .slider-label {
     display:block;
     margin-bottom: 5px;
@@ -68,6 +98,9 @@
 
 
 
+
+
+
     </style>
     <meta charset="UTF-8">
     <title>covid-simulator-web</title>
@@ -75,18 +108,25 @@
 <body>
 <div class="main-container">
     <div class="left-info-container" id="left-container">
-        <p id="infected-text">Infected: </p>
-        <p id="immune-text">Immune: </p>
-        <p id="total-text">Total: </p>
+        <span id="day-text">Day total: </span>
+        <div>
+            <span class="dot-red"></span></span><span class="info-text-inline" id="infected-text">Infected: </span>
+        </div>
+        <div>
+            <span class="dot-green"></span><span class="info-text-inline" id="immune-text">Immune: </span>
+        </div>
+        <div>
+            <span class="dot-blue"></span><span class="info-text-inline" id="healthy-text">Healthy: </span>
+        </div>
+        <span id="total-text">Total: </span>
         <label for="maxr" class="slider-label">Max R</label>
         <div class="slidecontainer">
-            <input type="range" min="1" max="6" value="5" class="slider" id="maxr"
-                   oninput="maxr-output-id.value=maxr.value">
-            <output class="slider-value" name="maxr-output" id="maxr-output-id">5</output>
+            <input type="range" min="1" max="20" value="5" class="slider" id="maxr">
+            <output class="slider-value" name="maxr-output" id="maxrOutput">5</output>
         </div>
         <label for="percentStaticPopulation" class="slider-label">Percent of static population</label>
         <div class="slidecontainer">
-            <input type="range" min="0" max="100" value="0" class="slider" id="percentStaticPopulation">
+            <input type="range" min="0" max="100" value="10" class="slider" id="percentStaticPopulation">
             <output class="slider-value" id="percentStaticPopulationOutput">0</output>
         </div>
         <label for="reimportInfectionDays" class="slider-label">Reimport one infected every</label>
@@ -98,6 +138,11 @@
         <div class="slidecontainer">
             <input type="range" min="0" max="260" value="104" class="slider" id="imunityLength">
             <output class="slider-value" id="imunityLengthOutput">104</output>
+        </div>
+        <label for="transmissionProbability" class="slider-label">Transmission probability per collision(1 = 100%) </label>
+        <div class="slidecontainer">
+            <input type="range" min="0" max="100" value="15" class="slider" id="transmissionProbability">
+            <output class="slider-value" id="transmissionProbabilityOutput">15</output>
         </div>
     </div>
     <div class="balls-container" id="balls-container">

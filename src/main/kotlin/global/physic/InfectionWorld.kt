@@ -17,10 +17,10 @@ class InfectionWorld(
     var imporInfectedAfterDays = 0
     var staticPopulationPercent = 0
     var lastReinfectionTime = 0
+    var infectionLength = 14
+    var maxR = 6
 
     private val elasticity = 1
-    private val INFECTION_LENGTH_DAYS = 14.0
-    private val MAX_R = 6
     private var collisionCounter = 0
 
     // transformation between physical and graphical screen coordinates
@@ -108,11 +108,11 @@ class InfectionWorld(
     private fun handleInfecting(a: Human, b: Human) {
         if ((a.state == State.INFECTED) || (b.state == State.INFECTED)) {
             if (Random.nextDouble() < infectionProbilityPerCollision) {
-                if (a.state == State.INFECTED && b.state == State.HEALTHY && a.infectedPeople < MAX_R) {
+                if (a.state == State.INFECTED && b.state == State.HEALTHY && a.infectedPeople < maxR) {
                     b.state = State.INFECTED
                     b.infectedTime = totalTime
                     a.infectedPeople++
-                } else if (b.state == State.INFECTED && a.state == State.HEALTHY && b.infectedPeople < MAX_R) {
+                } else if (b.state == State.INFECTED && a.state == State.HEALTHY && b.infectedPeople < maxR) {
                     a.state = State.INFECTED
                     a.infectedTime = totalTime
                     b.infectedPeople++
@@ -179,15 +179,15 @@ class InfectionWorld(
         immune = 0
         infected = 0
         for (i in 0 until humans.size) {
-            if (humans[i].state == State.HEALTHY){
-                if ((totalTime-lastReinfectionTime>imporInfectedAfterDays) && (imporInfectedAfterDays>0)) {
+            if (humans[i].state == State.HEALTHY) {
+                if ((totalTime - lastReinfectionTime > imporInfectedAfterDays) && (imporInfectedAfterDays > 0)) {
                     humans[i].state = State.INFECTED
                     humans[i].infectedTime = totalTime
                     lastReinfectionTime = totalTime.toInt()
                 }
             }
             if (humans[i].state == State.INFECTED) {
-                if (totalTime - humans[i].infectedTime >= INFECTION_LENGTH_DAYS) {
+                if (totalTime - humans[i].infectedTime >= infectionLength) {
                     humans[i].state = State.IMMUNE
                     humans[i].infectedPeople = 0
                 } else {
@@ -195,7 +195,7 @@ class InfectionWorld(
                 }
             }
             if (humans[i].state == State.IMMUNE) {
-                if (totalTime - humans[i].infectedTime > imunityLength) {
+                if (totalTime - (humans[i].infectedTime + infectionLength) > imunityLength) {
                     humans[i].infectedTime = 0.0
                     humans[i].state = State.HEALTHY
                 } else {
