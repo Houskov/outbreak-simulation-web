@@ -3,26 +3,32 @@
 <head>
     <style>
 .main-container{
-    position:relative;
-    display: inline-block;
-    margin:0px;
+    display: table-cell
+    margin:100px;
     width:100%;
     height:80%;
 }
 .left-info-container {
+    vertical-align: middle;
     display: inline-block;
-    max-width:300px;
+    max-width:600px;
 }
 .balls-container {
+    vertical-align: middle;
     display: inline-block;
 }
+
+.slider-label {
+    display:block;
+    margin-bottom: 5px;
+}
 .slidecontainer {
-  width:100%;
-  margin-bottom: 25px;
+    max-width:100%;
+    margin-bottom: 25px;
 }
 .slider {
   -webkit-appearance: none;
-  width: 100%;
+  width: 200px;
   height: 15px;
   border-radius: 5px;
   background: #d3d3d3;
@@ -50,6 +56,14 @@
   cursor: pointer;
 }
 
+.slider-value {
+                display: inline-block;
+                margin-left: 20px
+            }
+
+
+
+
 
 
 
@@ -64,19 +78,26 @@
         <p id="infected-text">Infected: </p>
         <p id="immune-text">Immune: </p>
         <p id="total-text">Total: </p>
-        <label for="maxr">Max R</label>
+        <label for="maxr" class="slider-label">Max R</label>
         <div class="slidecontainer">
             <input type="range" min="1" max="6" value="5" class="slider" id="maxr"
                    oninput="maxr-output-id.value=maxr.value">
-            <output name="maxr-output" id="maxr-output-id">5</output>
+            <output class="slider-value" name="maxr-output" id="maxr-output-id">5</output>
         </div>
-        <label for="percentStaticPopulation">Percent of static population</label>
+        <label for="percentStaticPopulation" class="slider-label">Percent of static population</label>
         <div class="slidecontainer">
             <input type="range" min="0" max="100" value="0" class="slider" id="percentStaticPopulation">
+            <output class="slider-value" id="percentStaticPopulationOutput">0</output>
         </div>
-        <label for="reimportInfectionDays">Reimport one infected person once in selected days</label>
+        <label for="reimportInfectionDays" class="slider-label">Reimport one infected every</label>
         <div class="slidecontainer">
             <input type="range" min="0" max="200" value="0" class="slider" id="reimportInfectionDays">
+            <output class="slider-value" id="reimportInfectionDaysOutput">0 days</output>
+        </div>
+        <label for="imunityLength" class="slider-label">Immunity length in weeks</label>
+        <div class="slidecontainer">
+            <input type="range" min="0" max="260" value="104" class="slider" id="imunityLength">
+            <output class="slider-value" id="imunityLengthOutput">104</output>
         </div>
     </div>
     <div class="balls-container" id="balls-container">

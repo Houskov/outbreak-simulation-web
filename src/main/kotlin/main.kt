@@ -8,13 +8,18 @@ import kotlin.browser.window
 import kotlin.random.*
 import kotlin.math.*
 
+
+val immune = document.getElementById("immune-text")
+val infected = document.getElementById("infected-text")
+val total = document.getElementById("total-text")
+
 val canvas = initializeCanvas()
 fun initializeCanvas(): HTMLCanvasElement {
     val div = document.getElementById("balls-container")
     val canvas = document.createElement("canvas") as HTMLCanvasElement
     val context = canvas.getContext("2d") as CanvasRenderingContext2D
     context.canvas.width = window.innerWidth/2
-    context.canvas.height = window.innerHeight
+    context.canvas.height = (window.innerHeight / 10) * 8
     div!!.appendChild(canvas)
     return canvas
 }
@@ -55,11 +60,8 @@ fun main(args: Array<String>) {
 }
 
 fun updateTextAndSettings(){
-    val infected = document.getElementById("infected-text")
     infected!!.textContent = "Infected people: " + world.infected.toString()
-    val immune = document.getElementById("immune-text")
     immune!!.textContent = "Immune people: " + world.immune.toString()
-    val total = document.getElementById("total-text")
     total!!.textContent = "Total people: " + world.humans.size.toString()
 }
 
@@ -84,7 +86,7 @@ fun paintCircle(human: Human){
         0.0,
         2*PI,
         false)
-    context.stroke();
+    //context.stroke();
     context.fill();
 }
 
