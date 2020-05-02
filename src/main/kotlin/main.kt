@@ -3,6 +3,8 @@ import com.example.covidsimulator.global.model.State
 import global.physic.InfectionWorld
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLOutputElement
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.random.*
@@ -12,13 +14,19 @@ import kotlin.math.*
 val immune = document.getElementById("immune-text")
 val infected = document.getElementById("infected-text")
 val total = document.getElementById("total-text")
+val percentStaticPopulation = document.getElementById("percentStaticPopulation") as HTMLInputElement
+val percentStaticPopulationOutput = document.getElementById("percentStaticPopulationOutput") as HTMLOutputElement
+val reimportInfectionDays = document.getElementById("reimportInfectionDays") as HTMLInputElement
+val reimportInfectionDaysOutput = document.getElementById("reimportInfectionDaysOutput") as HTMLOutputElement
+val imunityLength = document.getElementById("imunityLength") as HTMLInputElement
+val imunityLengthOutput = document.getElementById("imunityLengthOutput") as HTMLOutputElement
 
 val canvas = initializeCanvas()
 fun initializeCanvas(): HTMLCanvasElement {
     val div = document.getElementById("balls-container")
     val canvas = document.createElement("canvas") as HTMLCanvasElement
     val context = canvas.getContext("2d") as CanvasRenderingContext2D
-    context.canvas.width = window.innerWidth/2
+    context.canvas.width = window.innerWidth / 2
     context.canvas.height = (window.innerHeight / 10) * 8
     div!!.appendChild(canvas)
     return canvas
@@ -52,20 +60,30 @@ fun main(args: Array<String>) {
     generateData()
     world.setWorldSize(width, height)
     window.setInterval({
+        updateSettings()
         world.update()
         drawData()
-        updateTextAndSettings()
+        updateStats()
     }, (world.dt * 1000).toInt())
 
 }
 
-fun updateTextAndSettings(){
+fun updateSettings() {
+    percentStaticPopulationOutput.textContent = percentStaticPopulation.value + "%"
+    world.staticPopulationPercent = percentStaticPopulation.value.toInt()
+    reimportInfectionDaysOutput.textContent = reimportInfectionDays.value + " days"
+    world.imporInfectedAfterDays = reimportInfectionDays.value.toInt()
+    imunityLengthOutput.textContent = imunityLength.value + " weeks"
+    //world.staticPopulationPercent = percentStaticPopulation.value.toInt()
+}
+
+fun updateStats() {
     infected!!.textContent = "Infected people: " + world.infected.toString()
     immune!!.textContent = "Immune people: " + world.immune.toString()
     total!!.textContent = "Total people: " + world.humans.size.toString()
 }
 
-fun drawData(){
+fun drawData() {
     clear()
     repaint()
 }
@@ -76,7 +94,7 @@ fun repaint() {
     }
 }
 
-fun paintCircle(human: Human){
+fun paintCircle(human: Human) {
     context.fillStyle = human.getColor()
     context.beginPath();
     context.arc(
@@ -84,8 +102,9 @@ fun paintCircle(human: Human){
         human.y,
         human.radius,
         0.0,
-        2*PI,
-        false)
+        2 * PI,
+        false
+    )
     //context.stroke();
     context.fill();
 }
