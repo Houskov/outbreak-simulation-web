@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" xmlns:width="http://www.w3.org/1999/xhtml" xmlns:max-width="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+.main-container{
+    position:relative;
+    display: inline-block;
+    margin:0px;
+    width:100%;
+    height:80%;
+}
+.left-info-container {
+    display: inline-block;
+    max-width:300px;
+}
+.balls-container {
+    display: inline-block;
+}
+.slidecontainer {
+  width:100%;
+  margin-bottom: 25px;
+}
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+
+
+
+
+    </style>
+    <meta charset="UTF-8">
+    <title>covid-simulator-web</title>
+</head>
+<body>
+<div class="main-container">
+    <div class="left-info-container" id="left-container">
+        <p id="infected-text">Infected: </p>
+        <p id="immune-text">Immune: </p>
+        <p id="total-text">Total: </p>
+        <label for="maxr">Max R</label>
+        <div class="slidecontainer">
+            <input type="range" min="1" max="6" value="5" class="slider" id="maxr"
+                   oninput="maxr-output-id.value=maxr.value">
+            <output name="maxr-output" id="maxr-output-id">5</output>
+        </div>
+        <label for="percentStaticPopulation">Percent of static population</label>
+        <div class="slidecontainer">
+            <input type="range" min="0" max="100" value="0" class="slider" id="percentStaticPopulation">
+        </div>
+        <label for="reimportInfectionDays">Reimport one infected person once in selected days</label>
+        <div class="slidecontainer">
+            <input type="range" min="0" max="200" value="0" class="slider" id="reimportInfectionDays">
+        </div>
+    </div>
+    <div class="balls-container" id="balls-container">
+
+    </div>
+</div>
+</body>
+<script src="covid-simulator-web.js"></script>
+</html>

@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="covid-simulator-web-1.0-SNAPSHOT">
+    <output-path>C:\dev\covid-simulator-web\build\libs</output-path>
+    <root id="archive" name="covid-simulator-web-1.0-SNAPSHOT.jar" />
+  </artifact>
+</component>
