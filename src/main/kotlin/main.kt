@@ -1,10 +1,7 @@
 import global.model.Human
 import com.example.covidsimulator.global.model.State
 import global.physic.InfectionWorld
-import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.HTMLOutputElement
+import org.w3c.dom.*
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.random.*
@@ -26,6 +23,10 @@ val imunityLength = document.getElementById("imunityLength") as HTMLInputElement
 val imunityLengthOutput = document.getElementById("imunityLengthOutput") as HTMLOutputElement
 val transmissionProbability = document.getElementById("transmissionProbability") as HTMLInputElement
 val transmissionProbabilityOutput = document.getElementById("transmissionProbabilityOutput") as HTMLOutputElement
+val ballsCount = document.getElementById("ballsCount") as HTMLInputElement
+val ballsCountOutput = document.getElementById("ballsCountOutput") as HTMLOutputElement
+
+var lastBallsCount = 100
 
 val canvas = initializeCanvas()
 fun initializeCanvas(): HTMLCanvasElement {
@@ -63,8 +64,8 @@ fun renderBackground() {
 
 var world: InfectionWorld = InfectionWorld(0.016)
 fun main(args: Array<String>) {
-    generateData()
     world.setWorldSize(width, height)
+    generateData(ballsCount.value.toInt()*10)
     window.setInterval({
         updateSettings()
         world.update()
@@ -75,6 +76,12 @@ fun main(args: Array<String>) {
 }
 
 fun updateSettings() {
+    if (lastBallsCount != ballsCount.value.toInt() * 10) {
+        val count = ballsCount.value.toInt() * 10
+        restart(count)
+        lastBallsCount = count
+        ballsCountOutput.textContent = count.toString()
+    }
     maxrOutput.textContent = maxr.value
     world.maxR = maxr.value.toInt()
     percentStaticPopulationOutput.textContent = percentStaticPopulation.value + "%"
@@ -110,9 +117,9 @@ fun paintCircle(human: Human) {
     context.fillStyle = human.getColor()
     context.beginPath();
     context.arc(
-        human.x,
-        human.y,
-        human.radius,
+        human.x/(world.worldWidth/width),
+        human.y/(world.worldHeight/height),
+        human.radius/(world.worldWidth/width),
         0.0,
         2 * PI,
         false
@@ -125,18 +132,22 @@ fun clear() {
     context.fillStyle = "#FFFFFF"
     context.fillRect(0.0, 0.0, width.toDouble(), height.toDouble())
     context.strokeStyle = "#000000"
-    context.lineWidth = 4.0
+    context.lineWidth = 1.0
     context.strokeRect(0.0, 0.0, width.toDouble(), height.toDouble())
 }
 
-fun generateData() {
-    for (i in 1 until 11)
-        for (j in 1 until 11) {
+fun generateData(ballCount: Int) {
+    val ballCountLine = ceil(sqrt(ballCount.toDouble())).toInt()
+    for (i in 1 until ballCountLine)
+        for (j in 1 until ballCountLine) {
+            if (world.humans.size>= ballCount){
+                break
+            }
             val dx = Random.nextDouble(-1.0, 1.0) * 5
             val dy = Random.nextDouble(-1.0, 1.0) * 5
             val human = Human(
-                10 + (i * width / 11).toDouble(),
-                10 + (j * height / 11).toDouble(),
+                10 + (i * (world.worldWidth / ballCountLine)).toDouble(),
+                10 + (j * (world.worldHeight / ballCountLine)).toDouble(),
                 dx * Random.nextDouble(1.0, 9.0),
                 dy * Random.nextDouble(1.0, 9.0),
                 dx,
@@ -149,4 +160,11 @@ fun generateData() {
     world.humans.shuffle()
     world.humans[world.humans.size / 2].state = State.INFECTED
     world.humans[world.humans.size / 2].infectedTime = 0.0
+}
+
+fun restart(ballCount: Int) {
+    world = InfectionWorld(0.016)
+    val size = ceil(sqrt(3600.0 * ballCount.toDouble())).toInt()
+    world.setWorldSize(size, size)
+    generateData(ballCount)
 }

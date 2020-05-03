@@ -24,8 +24,8 @@ class InfectionWorld(
     private var collisionCounter = 0
 
     // transformation between physical and graphical screen coordinates
-    private var worldWidth: Int = 0
-    private var worldHeight: Int = 0
+    var worldWidth: Int = 0
+    var worldHeight: Int = 0
 
     var humans: ArrayList<Human> = ArrayList()
 

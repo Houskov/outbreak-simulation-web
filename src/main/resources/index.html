@@ -1,17 +1,34 @@
 <!doctype html>
-<html lang="en" xmlns:width="http://www.w3.org/1999/xhtml" xmlns:max-width="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:width="http://www.w3.org/1999/xhtml" xmlns:max-width="http://www.w3.org/1999/xhtml"
+      xmlns:expr="http://www.w3.org/1999/xhtml" xmlns:b="http://www.w3.org/1999/XSL/Transform">
 <head>
+    <meta content='outbreaksimulation.com' name='og:site_name '/><meta expr:content='data:view.title.escaped' property='og:title'/>
+    <meta expr:content='data:view.description.escaped' property='og:description'/>
+    <b:if cond='data:view.featuredImage'>
+        <meta expr:content='resizeImage(data:view.featuredImage, 1200, &quot;1200:630&quot;)' property='og:image'/>
+        <b:elseif cond='data:widgets'/>
+        <b:loop reverse='true' values='data:widgets.Blog.first.posts where (p =&gt; p.featuredImage) map (p =&gt; p.featuredImage)' var='imageUrl'>
+            <meta expr:content='resizeImage(data:imageUrl, 1200, &quot;1200:630&quot;)' property='og:image'/>
+        </b:loop>
+        <b:elseif cond='data:blog.postImageUrl'/>
+        <meta expr:content='resizeImage(data:blog.postImageUrl, 1200, &quot;1200:630&quot;)' property='og:image'/>
+    </b:if>
+    <!--  Open Graph Tags Generator for Blogger: https://bit.ly/30tJixf -->
     <style>
 .main-container{
     display: table-cell
-    margin:100px;
-    width:100%;
-    height:80%;
+    width: 100%;
+    height: 100%;
+    max-width:1000px;
+    max-height:1000px;
+    margin:auto;
+    margin-top: 50px;
 }
 .left-info-container {
     vertical-align: middle;
     display: inline-block;
     max-width:600px;
+    margin-right: 30px
 }
 .balls-container {
     vertical-align: middle;
@@ -22,7 +39,7 @@
   height: 10px;
   width: 10px;
   margin-right: 3px;
-  background-color: #bbb;
+  background-color: #32CD32;
   border-radius: 50%;
   display:inline-block;
 }
@@ -34,7 +51,7 @@
   height: 10px;
   width: 10px;
   margin-right: 3px;
-  background-color: #bbb;
+  background-color: #FF0000;
   border-radius: 50%;
   display:inline-block;
 }
@@ -43,7 +60,7 @@
   height: 10px;
   width: 10px;
   margin-right: 3px;
-  background-color: #bbb;
+  background-color: #0000FF;
   border-radius: 50%;
   display:inline-block;
 }
@@ -53,7 +70,7 @@
     margin-bottom: 5px;
 }
 .slidecontainer {
-    max-width:100%;
+    max-width:400px;
     margin-bottom: 25px;
 }
 .slider {
@@ -85,11 +102,16 @@
   background: #4CAF50;
   cursor: pointer;
 }
+.info-text {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
 
 .slider-value {
                 display: inline-block;
                 margin-left: 20px
             }
+
 
 
 
@@ -109,21 +131,19 @@
 <div class="main-container">
     <div class="left-info-container" id="left-container">
         <span id="day-text">Day total: </span>
-        <div>
+        <div class="info-text">
             <span class="dot-red"></span></span><span class="info-text-inline" id="infected-text">Infected: </span>
         </div>
-        <div>
+        <div class="info-text">
             <span class="dot-green"></span><span class="info-text-inline" id="immune-text">Immune: </span>
         </div>
-        <div>
+        <div class="info-text">
             <span class="dot-blue"></span><span class="info-text-inline" id="healthy-text">Healthy: </span>
         </div>
-        <span id="total-text">Total: </span>
-        <label for="maxr" class="slider-label">Max R</label>
-        <div class="slidecontainer">
-            <input type="range" min="1" max="20" value="5" class="slider" id="maxr">
-            <output class="slider-value" name="maxr-output" id="maxrOutput">5</output>
+        <div class="info-text">
+            <span id="total-text">Total: </span>
         </div>
+
         <label for="percentStaticPopulation" class="slider-label">Percent of static population</label>
         <div class="slidecontainer">
             <input type="range" min="0" max="100" value="10" class="slider" id="percentStaticPopulation">
@@ -131,7 +151,7 @@
         </div>
         <label for="reimportInfectionDays" class="slider-label">Reimport one infected every</label>
         <div class="slidecontainer">
-            <input type="range" min="0" max="200" value="0" class="slider" id="reimportInfectionDays">
+            <input type="range" min="0" max="100" value="0" class="slider" id="reimportInfectionDays">
             <output class="slider-value" id="reimportInfectionDaysOutput">0 days</output>
         </div>
         <label for="imunityLength" class="slider-label">Immunity length in weeks</label>
@@ -139,10 +159,21 @@
             <input type="range" min="0" max="260" value="104" class="slider" id="imunityLength">
             <output class="slider-value" id="imunityLengthOutput">104</output>
         </div>
-        <label for="transmissionProbability" class="slider-label">Transmission probability per collision(1 = 100%) </label>
+        <label for="transmissionProbability" class="slider-label">Transmission probability per collision (1 =
+            100%) </label>
         <div class="slidecontainer">
             <input type="range" min="0" max="100" value="15" class="slider" id="transmissionProbability">
             <output class="slider-value" id="transmissionProbabilityOutput">15</output>
+        </div>
+        <label for="ballsCount" class="slider-label">Balls count</label>
+        <div class="slidecontainer">
+            <input type="range" min="1" max="100" value="10" class="slider" id="ballsCount">
+            <output class="slider-value" name="balls-count-output" id="ballsCountOutput">100</output>
+        </div>
+        <label for="maxr" class="slider-label">Max R</label>
+        <div class="slidecontainer">
+            <input type="range" min="1" max="20" value="5" class="slider" id="maxr">
+            <output class="slider-value" name="maxr-output" id="maxrOutput">5</output>
         </div>
     </div>
     <div class="balls-container" id="balls-container">
@@ -151,4 +182,6 @@
 </div>
 </body>
 <script src="covid-simulator-web.js"></script>
+<script src="range-touch.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </html>
