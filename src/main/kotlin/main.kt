@@ -6,6 +6,7 @@ import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.random.*
 import kotlin.math.*
+import jquery.*
 
 
 val day = document.getElementById("day-text")
@@ -26,15 +27,26 @@ val transmissionProbabilityOutput = document.getElementById("transmissionProbabi
 val ballsCount = document.getElementById("ballsCount") as HTMLInputElement
 val ballsCountOutput = document.getElementById("ballsCountOutput") as HTMLOutputElement
 
-var lastBallsCount = 100
+var lastBallsCount = 500
 
 val canvas = initializeCanvas()
+val graphCanvas = initializeGraphCanvas()
 fun initializeCanvas(): HTMLCanvasElement {
     val div = document.getElementById("balls-container")
     val canvas = document.createElement("canvas") as HTMLCanvasElement
     val context = canvas.getContext("2d") as CanvasRenderingContext2D
-    context.canvas.width = 600
-    context.canvas.height = 600
+    context.canvas.width = 500
+    context.canvas.height = 500
+    div!!.appendChild(canvas)
+    return canvas
+}
+
+fun initializeGraphCanvas(): HTMLCanvasElement {
+    val div = document.getElementById("graph-canvas")
+    val canvas = document.createElement("canvas") as HTMLCanvasElement
+    val context = canvas.getContext("2d") as CanvasRenderingContext2D
+    context.canvas.width = 500
+    context.canvas.height = 100
     div!!.appendChild(canvas)
     return canvas
 }
@@ -42,6 +54,10 @@ fun initializeCanvas(): HTMLCanvasElement {
 val context: CanvasRenderingContext2D
     get() {
         return canvas.getContext("2d") as CanvasRenderingContext2D
+    }
+val graphContext: CanvasRenderingContext2D
+    get() {
+        return graphCanvas.getContext("2d") as CanvasRenderingContext2D
     }
 
 
@@ -55,6 +71,16 @@ val height: Int
         return canvas.height
     }
 
+val graphWidth: Int
+    get() {
+        return graphCanvas.width
+    }
+
+val graphHeight: Int
+    get() {
+        return graphCanvas.height
+    }
+
 fun renderBackground() {
     context.save()
     context.fillStyle = "#5C7EED"
@@ -64,8 +90,7 @@ fun renderBackground() {
 
 var world: InfectionWorld = InfectionWorld(0.016)
 fun main(args: Array<String>) {
-    world.setWorldSize(width, height)
-    generateData(ballsCount.value.toInt()*10)
+    restart(ballsCount.value.toInt() * 10)
     window.setInterval({
         updateSettings()
         world.update()
@@ -105,6 +130,7 @@ fun updateStats() {
 fun drawData() {
     clear()
     repaint()
+    //drawGraphFunctions()
 }
 
 fun repaint() {
@@ -117,9 +143,9 @@ fun paintCircle(human: Human) {
     context.fillStyle = human.getColor()
     context.beginPath();
     context.arc(
-        human.x/(world.worldWidth/width),
-        human.y/(world.worldHeight/height),
-        human.radius/(world.worldWidth/width),
+        human.x / (world.worldWidth.toDouble() / width.toDouble()),
+        human.y / (world.worldHeight.toDouble() / height.toDouble()),
+        human.radius / (world.worldWidth.toDouble() / width.toDouble()),
         0.0,
         2 * PI,
         false
@@ -136,23 +162,42 @@ fun clear() {
     context.strokeRect(0.0, 0.0, width.toDouble(), height.toDouble())
 }
 
+var lastDrawnTime = 0
+var lastDrawnInfected = 0
+fun drawGraphFunctions() {
+    if (world.totalTime - lastDrawnTime >= 1) {
+        graphContext.beginPath();       // Start a new path
+        graphContext.moveTo(
+            world.totalTime - 1,
+            graphHeight - ((graphHeight.toDouble() / world.humans.size.toDouble()) * lastDrawnInfected)
+        )
+        graphContext.lineTo(
+            world.totalTime,
+            graphHeight - ((graphHeight.toDouble() / world.humans.size.toDouble()) * world.infected.toDouble())
+        )
+        graphContext.stroke();
+        lastDrawnInfected = world.infected
+        lastDrawnTime = world.totalTime.toInt()
+    }
+}
+
 fun generateData(ballCount: Int) {
     val ballCountLine = ceil(sqrt(ballCount.toDouble())).toInt()
-    for (i in 1 until ballCountLine)
-        for (j in 1 until ballCountLine) {
-            if (world.humans.size>= ballCount){
+    for (i in 1 until ballCountLine + 1)
+        for (j in 1 until ballCountLine + 1) {
+            if (world.humans.size >= ballCount) {
                 break
             }
             val dx = Random.nextDouble(-1.0, 1.0) * 5
             val dy = Random.nextDouble(-1.0, 1.0) * 5
             val human = Human(
-                10 + (i * (world.worldWidth / ballCountLine)).toDouble(),
-                10 + (j * (world.worldHeight / ballCountLine)).toDouble(),
+                (i * (world.worldWidth / (ballCountLine + 1))).toDouble(),
+                (j * (world.worldHeight / (ballCountLine + 1))).toDouble(),
                 dx * Random.nextDouble(1.0, 9.0),
                 dy * Random.nextDouble(1.0, 9.0),
                 dx,
                 dy,
-                15.0,
+                16.0,
                 1.0
             )
             world.humans.add(human)
@@ -164,7 +209,7 @@ fun generateData(ballCount: Int) {
 
 fun restart(ballCount: Int) {
     world = InfectionWorld(0.016)
-    val size = ceil(sqrt(3600.0 * ballCount.toDouble())).toInt()
+    val size = sqrt(4000.0 * ballCount.toDouble()).toInt()
     world.setWorldSize(size, size)
     generateData(ballCount)
 }

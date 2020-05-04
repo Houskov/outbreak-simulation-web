@@ -2,12 +2,16 @@
 <html lang="en" xmlns:width="http://www.w3.org/1999/xhtml" xmlns:max-width="http://www.w3.org/1999/xhtml"
       xmlns:expr="http://www.w3.org/1999/xhtml" xmlns:b="http://www.w3.org/1999/XSL/Transform">
 <head>
-    <meta content='outbreaksimulation.com' name='og:site_name '/><meta expr:content='data:view.title.escaped' property='og:title'/>
+    <meta content='outbreaksimulation.com' name='og:site_name '/>
+    <meta expr:content='data:view.title.escaped' property='og:title'/>
+    <meta property="og:image" content="http://www.outbreaksimulation.com/"/>
     <meta expr:content='data:view.description.escaped' property='og:description'/>
     <b:if cond='data:view.featuredImage'>
         <meta expr:content='resizeImage(data:view.featuredImage, 1200, &quot;1200:630&quot;)' property='og:image'/>
         <b:elseif cond='data:widgets'/>
-        <b:loop reverse='true' values='data:widgets.Blog.first.posts where (p =&gt; p.featuredImage) map (p =&gt; p.featuredImage)' var='imageUrl'>
+        <b:loop reverse='true'
+                values='data:widgets.Blog.first.posts where (p =&gt; p.featuredImage) map (p =&gt; p.featuredImage)'
+                var='imageUrl'>
             <meta expr:content='resizeImage(data:imageUrl, 1200, &quot;1200:630&quot;)' property='og:image'/>
         </b:loop>
         <b:elseif cond='data:blog.postImageUrl'/>
@@ -15,6 +19,15 @@
     </b:if>
     <!--  Open Graph Tags Generator for Blogger: https://bit.ly/30tJixf -->
     <style>
+h1 {
+  text-align: center;
+  font-size: 2.0em;
+}
+.div-contain-text {
+    width: 80%;
+    max-width: 1000px;
+    margin: auto;
+}
 .main-container{
     display: table-cell
     width: 100%;
@@ -76,7 +89,7 @@
 .slider {
   -webkit-appearance: none;
   width: 200px;
-  height: 5px;
+  height: 10px;
   border-radius: 2px;
   background: #d3d3d3;
   outline: none;
@@ -88,16 +101,16 @@
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #4CAF50;
   cursor: pointer;
 }
 
 .slider::-moz-range-thumb {
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #4CAF50;
   cursor: pointer;
@@ -111,26 +124,21 @@
                 display: inline-block;
                 margin-left: 20px
             }
-
-
-
-
-
-
-
-
-
-
-
-
     </style>
     <meta charset="UTF-8">
-    <title>covid-simulator-web</title>
+    <title>Outbreak simulation</title>
 </head>
 <body>
+<div>
+    <h1>Welcome to outbreak simulator</h1>
+</div>
+<div class="div-contain-text">
+    <span>You can try to simulate outbreak with your own parameters. Current default parameters are estimated to be somehow close to covid-19 for naive population, but you can simulate other diseases if you set parameters right . You can change all the parameters live during the simulation except of population size. If you change population size it will restart the simulation with actual chosen parameters. For more accurate simulation with higher population size you can choose to import new infected person every few days during first weeks. There are many improvements to be done. I will be glad to implement good ideas or recommendations if you contact me at</span>
+    <a href="mailto: [youremailaddress@yourprovider.com]?subject= &body= "> ondrej.housar@gmail.com</a>.
+</div>
 <div class="main-container">
     <div class="left-info-container" id="left-container">
-        <span id="day-text">Day total: </span>
+        <span id="day-text">Day: </span>
         <div class="info-text">
             <span class="dot-red"></span></span><span class="info-text-inline" id="infected-text">Infected: </span>
         </div>
@@ -143,13 +151,14 @@
         <div class="info-text">
             <span id="total-text">Total: </span>
         </div>
-
-        <label for="percentStaticPopulation" class="slider-label">Percent of static population</label>
+        <br>
+        <label for="percentStaticPopulation" class="slider-label">Percent of static population(% population not
+            moving)</label>
         <div class="slidecontainer">
             <input type="range" min="0" max="100" value="10" class="slider" id="percentStaticPopulation">
             <output class="slider-value" id="percentStaticPopulationOutput">0</output>
         </div>
-        <label for="reimportInfectionDays" class="slider-label">Reimport one infected every</label>
+        <label for="reimportInfectionDays" class="slider-label">Import one infected every</label>
         <div class="slidecontainer">
             <input type="range" min="0" max="100" value="0" class="slider" id="reimportInfectionDays">
             <output class="slider-value" id="reimportInfectionDaysOutput">0 days</output>
@@ -165,10 +174,10 @@
             <input type="range" min="0" max="100" value="15" class="slider" id="transmissionProbability">
             <output class="slider-value" id="transmissionProbabilityOutput">15</output>
         </div>
-        <label for="ballsCount" class="slider-label">Balls count</label>
+        <label for="ballsCount" class="slider-label">Population size</label>
         <div class="slidecontainer">
-            <input type="range" min="1" max="100" value="10" class="slider" id="ballsCount">
-            <output class="slider-value" name="balls-count-output" id="ballsCountOutput">100</output>
+            <input type="range" min="1" max="100" value="50" class="slider" id="ballsCount">
+            <output class="slider-value" name="balls-count-output" id="ballsCountOutput">500</output>
         </div>
         <label for="maxr" class="slider-label">Max R</label>
         <div class="slidecontainer">
@@ -179,6 +188,9 @@
     <div class="balls-container" id="balls-container">
 
     </div>
+</div>
+<div id="graph-canvas">
+
 </div>
 </body>
 <script src="covid-simulator-web.js"></script>

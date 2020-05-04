@@ -19,7 +19,7 @@ open class Ball(
 
     init {
         this.dt = 0.016
-        this.m = 0.5
+        this.m = 1.0
     }
 
     fun move() {

@@ -14,6 +14,8 @@ class InfectionWorld(
     var infectionProbilityPerCollision: Double = 0.15
     var infected: Int = 0
     var immune: Int = 0
+    var previousStepInfected: Int = 0
+    var previousStepImmune: Int = 0
     var imporInfectedAfterDays = 0
     var staticPopulationPercent = 0
     var lastReinfectionTime = 0
@@ -42,10 +44,16 @@ class InfectionWorld(
     }
 
     private fun updateBalls() {
+        previousStepImmune = immune
+        previousStepInfected = infected
         val staticCount = (humans.size * staticPopulationPercent) / 100
         for (i in 0 until humans.size) {
             val b = humans[i]
             if (i >= staticCount) {
+                if (b.m != 1.0) {
+                    generateRandomDirectionAndSpeed(humans[i])
+                    b.m = 1.0
+                }
                 b.acc()
                 b.move()
                 // top
@@ -68,7 +76,6 @@ class InfectionWorld(
                     b.x = worldWidth - b.radius
                     b.dx = -b.dx * elasticity
                 }
-                b.m = 1.0
             } else {
                 b.dx = 0.0
                 b.dy = 0.0
@@ -203,5 +210,13 @@ class InfectionWorld(
                 }
             }
         }
+    }
+    fun generateRandomDirectionAndSpeed(human:Human){
+        val dx = Random.nextDouble(-1.0, 1.0) * 5
+        val dy = Random.nextDouble(-1.0, 1.0) * 5
+        human.dx = dx * Random.nextDouble(1.0, 9.0)
+        human.dy = dx * Random.nextDouble(1.0, 9.0)
+        human.fx = dx
+        human.fy = dy
     }
 }
