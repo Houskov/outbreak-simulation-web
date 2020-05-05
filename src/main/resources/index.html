@@ -4,7 +4,7 @@
 <head>
     <meta content='outbreaksimulation.com' name='og:site_name '/>
     <meta expr:content='data:view.title.escaped' property='og:title'/>
-    <meta property="og:image" content="http://www.outbreaksimulation.com/"/>
+    <meta property="og:image" content="http://www.outbreaksimulation.com/preview.jpg"/>
     <meta expr:content='data:view.description.escaped' property='og:description'/>
     <b:if cond='data:view.featuredImage'>
         <meta expr:content='resizeImage(data:view.featuredImage, 1200, &quot;1200:630&quot;)' property='og:image'/>
@@ -36,6 +36,7 @@ h1 {
     max-height:1000px;
     margin:auto;
     margin-top: 50px;
+    margin-bottom: 50px;
 }
 .left-info-container {
     vertical-align: middle;
@@ -137,7 +138,7 @@ h1 {
     <h1>Welcome to outbreak simulator</h1>
 </div>
 <div class="div-contain-text">
-    <span>You can try to simulate outbreak with your own parameters. Current default parameters are estimated to be somehow close to covid-19 for naive population, but you can simulate other diseases if you set parameters right . You can change all the parameters live during the simulation except of population size. If you change population size it will restart the simulation with actual chosen parameters. For more accurate simulation with higher population size you can choose to import new infected person every few days during first weeks. There are many improvements to be done. I will be glad to implement good ideas or recommendations if you contact me at</span>
+    <span>You can try to simulate outbreak with your own parameters. Current selected disease is ultra infectious to show ability of simulator to users, but you can select covid-19 approximation from predefined or create your custom infection simulation. You can change all the parameters live during the simulation except of population size and disease type. If you change population size it will restart simulation with selected parameters and changed population size. If you change disease type it will restart simulation with selected population size and new parameters of selected disease. For more accurate simulation with higher population size you can choose to import new infected person every few days during first weeks. There are many improvements to be done. I will be glad to implement good ideas or recommendations if you contact me at</span>
     <a href="mailto: [youremailaddress@yourprovider.com]?subject= &body= "> ondrej.housar@gmail.com</a>.
 </div>
 <div class="main-container">
@@ -191,6 +192,19 @@ h1 {
             <input type="range" min="1" max="20" value="5" class="slider" id="maxr">
             <output class="slider-value" name="maxr-output" id="maxrOutput">5</output>
         </div>
+        <label for="diseaseLength" class="slider-label">Disease length</label>
+        <div class="slidecontainer">
+            <input type="range" min="1" max="100" value="14" class="slider" id="diseaseLength">
+            <output class="slider-value" name="maxr-output" id="diseaseLengthOutput">14 days</output>
+        </div>
+        <div>
+        <label for="diseases" class="slider-label">Predefined diseases:</label>
+        <select id="diseases">
+            <option value="ultrainfectious">Ultra infectious with short immunity</option>
+            <option value="covid19">Covid-19 approximation</option>
+        </select>
+        </div>
+
     </div>
     <div class="balls-container" id="balls-container">
 

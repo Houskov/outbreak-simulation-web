@@ -27,6 +27,9 @@ val transmissionProbability = document.getElementById("transmissionProbability")
 val transmissionProbabilityOutput = document.getElementById("transmissionProbabilityOutput") as HTMLOutputElement
 val ballsCount = document.getElementById("ballsCount") as HTMLInputElement
 val ballsCountOutput = document.getElementById("ballsCountOutput") as HTMLOutputElement
+val diseaseLength = document.getElementById("diseaseLength") as HTMLInputElement
+val diseaseLengthOutput = document.getElementById("diseaseLengthOutput") as HTMLOutputElement
+val diseasesSelect = document.getElementById("diseases") as HTMLSelectElement
 
 var lastBallsCount = 500
 var world: InfectionWorld = InfectionWorld(0.016)
@@ -43,7 +46,7 @@ fun initializeCanvas(): HTMLCanvasElement {
     return canvas
 }
 
-var graphPainter:GraphPainter = GraphPainter(graphCanvas)
+var graphPainter: GraphPainter = GraphPainter(graphCanvas)
 
 
 fun initializeGraphCanvas(): HTMLCanvasElement {
@@ -84,6 +87,8 @@ fun renderBackground() {
 }
 
 fun main(args: Array<String>) {
+    setParametersForUltraInfectious()
+    selectDiseaseHandler()
     restart(ballsCount.value.toInt() * 10)
     window.setInterval({
         updateSettings()
@@ -112,6 +117,8 @@ fun updateSettings() {
     world.imunityLength = imunityLength.value.toDouble() * 7
     transmissionProbabilityOutput.textContent = (transmissionProbability.value.toDouble() / 100).toString()
     world.infectionProbilityPerCollision = transmissionProbability.value.toDouble() / 100
+    diseaseLengthOutput.textContent = diseaseLength.value + " days"
+    world.infectionLength = diseaseLength.value.toInt()
 }
 
 fun updateStats() {
@@ -123,7 +130,7 @@ fun updateStats() {
     updateGraph()
 }
 
-private fun updateGraph(){
+private fun updateGraph() {
     graphPainter.drawGraphFunction(world.infectedHistory, world.immuneHistory, world.healthyHistory)
 }
 
@@ -193,4 +200,34 @@ fun restart(ballCount: Int) {
     val size = sqrt(4000.0 * ballCount.toDouble()).toInt()
     world.setWorldSize(size, size)
     generateData(ballCount)
+}
+
+fun selectDiseaseHandler() {
+    diseasesSelect.addEventListener("change", {
+        if (diseasesSelect.value == "ultrainfectious") {
+            maxr.value = 5.toString()
+            percentStaticPopulation.value = 10.toString()
+            reimportInfectionDays.value = 0.toString()
+            imunityLength.value = 2.toString()
+            transmissionProbability.value = 80.toString()
+            diseaseLength.value = 10.toString()
+        } else if (diseasesSelect.value == "covid19") {
+            maxr.value = 5.toString()
+            percentStaticPopulation.value = 10.toString()
+            reimportInfectionDays.value = 0.toString()
+            imunityLength.value = 104.toString()
+            transmissionProbability.value = 15.toString()
+            diseaseLength.value = 14.toString()
+        }
+        restart(lastBallsCount)
+    })
+}
+
+fun setParametersForUltraInfectious(){
+    maxr.value = 5.toString()
+    percentStaticPopulation.value = 10.toString()
+    reimportInfectionDays.value = 0.toString()
+    imunityLength.value = 2.toString()
+    transmissionProbability.value = 80.toString()
+    diseaseLength.value = 10.toString()
 }
