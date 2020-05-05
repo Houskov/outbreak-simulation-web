@@ -124,7 +124,7 @@ fun updateStats() {
 }
 
 private fun updateGraph(){
-    graphPainter.drawGraphFunction(world.infectedHistory)
+    graphPainter.drawGraphFunction(world.infectedHistory, world.immuneHistory, world.healthyHistory)
 }
 
 fun drawData() {
@@ -189,6 +189,7 @@ fun generateData(ballCount: Int) {
 
 fun restart(ballCount: Int) {
     world = InfectionWorld(0.016)
+    graphPainter = GraphPainter(graphCanvas)
     val size = sqrt(4000.0 * ballCount.toDouble()).toInt()
     world.setWorldSize(size, size)
     generateData(ballCount)

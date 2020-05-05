@@ -222,10 +222,14 @@ class InfectionWorld(
     }
 
     var infectedHistory:ArrayList<Int> = ArrayList()
+    var immuneHistory:ArrayList<Int> = ArrayList()
+    var healthyHistory:ArrayList<Int> = ArrayList()
     private fun updateHistoricData(){
         val index = totalTime.toInt()
         if (infectedHistory.size < index){
             infectedHistory.add(infected)
+            immuneHistory.add(immune)
+            healthyHistory.add(humans.size - infected - immune)
         }
     }
 }
