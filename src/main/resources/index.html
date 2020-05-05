@@ -82,6 +82,10 @@ h1 {
     display:block;
     margin-bottom: 5px;
 }
+.graph-container {
+    height: auto;
+    width: auto;
+}
 .slidecontainer {
     max-width:400px;
     margin-bottom: 25px;
@@ -151,6 +155,9 @@ h1 {
         <div class="info-text">
             <span id="total-text">Total: </span>
         </div>
+        <div id="graph-canvas" class="graph-container">
+
+        </div>
         <br>
         <label for="percentStaticPopulation" class="slider-label">Percent of static population(% population not
             moving)</label>
@@ -189,11 +196,10 @@ h1 {
 
     </div>
 </div>
-<div id="graph-canvas">
 
-</div>
 </body>
 <script src="covid-simulator-web.js"></script>
 <script src="range-touch.min.js"></script>
+<script src="HackTimer.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </html>

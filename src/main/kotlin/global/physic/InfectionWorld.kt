@@ -36,6 +36,7 @@ class InfectionWorld(
         updateBalls()
         updateCollision()
         updateInfection()
+        updateHistoricData()
     }
 
     fun setWorldSize(width: Int, height: Int) {
@@ -218,5 +219,13 @@ class InfectionWorld(
         human.dy = dx * Random.nextDouble(1.0, 9.0)
         human.fx = dx
         human.fy = dy
+    }
+
+    var infectedHistory:ArrayList<Int> = ArrayList()
+    private fun updateHistoricData(){
+        val index = totalTime.toInt()
+        if (infectedHistory.size < index){
+            infectedHistory.add(infected)
+        }
     }
 }

@@ -1,6 +1,7 @@
 import global.model.Human
 import com.example.covidsimulator.global.model.State
 import global.physic.InfectionWorld
+import global.view.GraphPainter
 import org.w3c.dom.*
 import kotlin.browser.document
 import kotlin.browser.window
@@ -28,6 +29,7 @@ val ballsCount = document.getElementById("ballsCount") as HTMLInputElement
 val ballsCountOutput = document.getElementById("ballsCountOutput") as HTMLOutputElement
 
 var lastBallsCount = 500
+var world: InfectionWorld = InfectionWorld(0.016)
 
 val canvas = initializeCanvas()
 val graphCanvas = initializeGraphCanvas()
@@ -41,11 +43,14 @@ fun initializeCanvas(): HTMLCanvasElement {
     return canvas
 }
 
+var graphPainter:GraphPainter = GraphPainter(graphCanvas)
+
+
 fun initializeGraphCanvas(): HTMLCanvasElement {
     val div = document.getElementById("graph-canvas")
     val canvas = document.createElement("canvas") as HTMLCanvasElement
     val context = canvas.getContext("2d") as CanvasRenderingContext2D
-    context.canvas.width = 500
+    context.canvas.width = 300
     context.canvas.height = 100
     div!!.appendChild(canvas)
     return canvas
@@ -71,16 +76,6 @@ val height: Int
         return canvas.height
     }
 
-val graphWidth: Int
-    get() {
-        return graphCanvas.width
-    }
-
-val graphHeight: Int
-    get() {
-        return graphCanvas.height
-    }
-
 fun renderBackground() {
     context.save()
     context.fillStyle = "#5C7EED"
@@ -88,7 +83,6 @@ fun renderBackground() {
     context.restore()
 }
 
-var world: InfectionWorld = InfectionWorld(0.016)
 fun main(args: Array<String>) {
     restart(ballsCount.value.toInt() * 10)
     window.setInterval({
@@ -96,6 +90,7 @@ fun main(args: Array<String>) {
         world.update()
         drawData()
         updateStats()
+
     }, (world.dt * 1000).toInt())
 
 }
@@ -125,12 +120,16 @@ fun updateStats() {
     immune!!.textContent = "Immune people: " + world.immune.toString()
     healthy!!.textContent = "Healthy people: " + (world.humans.size - world.infected - world.immune).toString()
     total!!.textContent = "Total people: " + world.humans.size.toString()
+    updateGraph()
+}
+
+private fun updateGraph(){
+    graphPainter.drawGraphFunction(world.infectedHistory)
 }
 
 fun drawData() {
     clear()
     repaint()
-    //drawGraphFunctions()
 }
 
 fun repaint() {
@@ -160,25 +159,6 @@ fun clear() {
     context.strokeStyle = "#000000"
     context.lineWidth = 1.0
     context.strokeRect(0.0, 0.0, width.toDouble(), height.toDouble())
-}
-
-var lastDrawnTime = 0
-var lastDrawnInfected = 0
-fun drawGraphFunctions() {
-    if (world.totalTime - lastDrawnTime >= 1) {
-        graphContext.beginPath();       // Start a new path
-        graphContext.moveTo(
-            world.totalTime - 1,
-            graphHeight - ((graphHeight.toDouble() / world.humans.size.toDouble()) * lastDrawnInfected)
-        )
-        graphContext.lineTo(
-            world.totalTime,
-            graphHeight - ((graphHeight.toDouble() / world.humans.size.toDouble()) * world.infected.toDouble())
-        )
-        graphContext.stroke();
-        lastDrawnInfected = world.infected
-        lastDrawnTime = world.totalTime.toInt()
-    }
 }
 
 fun generateData(ballCount: Int) {
