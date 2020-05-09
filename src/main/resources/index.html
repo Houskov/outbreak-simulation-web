@@ -89,7 +89,7 @@ h1 {
 }
 .slidecontainer {
     max-width:400px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 }
 .slider {
   -webkit-appearance: none;
@@ -160,6 +160,13 @@ h1 {
 
         </div>
         <br>
+        <div class="slidecontainer">
+            <label for="diseases" class="slider-label">Predefined diseases:</label>
+            <select id="diseases">
+                <option value="ultrainfectious">Ultra infectious with short immunity</option>
+                <option value="covid19">Covid-19 approximation</option>
+            </select>
+        </div>
         <label for="percentStaticPopulation" class="slider-label">Percent of static population(% population not
             moving)</label>
         <div class="slidecontainer">
@@ -196,13 +203,6 @@ h1 {
         <div class="slidecontainer">
             <input type="range" min="1" max="100" value="14" class="slider" id="diseaseLength">
             <output class="slider-value" name="maxr-output" id="diseaseLengthOutput">14 days</output>
-        </div>
-        <div>
-        <label for="diseases" class="slider-label">Predefined diseases:</label>
-        <select id="diseases">
-            <option value="ultrainfectious">Ultra infectious with short immunity</option>
-            <option value="covid19">Covid-19 approximation</option>
-        </select>
         </div>
 
     </div>

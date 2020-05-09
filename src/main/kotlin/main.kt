@@ -85,7 +85,7 @@ fun renderBackground() {
     context.fillRect(0.0, 0.0, width.toDouble(), height.toDouble())
     context.restore()
 }
-
+var skipped:Int = 0
 fun main(args: Array<String>) {
     setParametersForUltraInfectious()
     selectDiseaseHandler()
@@ -93,10 +93,15 @@ fun main(args: Array<String>) {
     window.setInterval({
         updateSettings()
         world.update()
-        drawData()
+        if(skipped>=8) {
+            drawData()
+            skipped = 0
+        } else {
+            skipped++
+        }
         updateStats()
 
-    }, (world.dt * 1000).toInt())
+    }, 4)
 
 }
 

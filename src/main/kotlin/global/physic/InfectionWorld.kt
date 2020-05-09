@@ -3,6 +3,7 @@ package global.physic
 import global.model.Ball
 import global.model.Human
 import com.example.covidsimulator.global.model.State
+import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.random.Random
 
@@ -31,7 +32,7 @@ class InfectionWorld(
 
     var humans: ArrayList<Human> = ArrayList()
 
-
+    var skipped = 0
     fun update() {
         updateBalls()
         updateCollision()
@@ -97,20 +98,29 @@ class InfectionWorld(
 
             for (j in i + 1 until length) {
                 b = humans[j]
-
-                if (distance(a, b) <= a.radius + b.radius) {
-                    collisionCounter++
-                    // collision probably happened dt before distance(A, B) == A.radius + B.radius
-                    // so we adjust the distance between center of the two humans -dt time
-                    adjustPosition(a, b, -1)
-                    // calc new velocities
-                    calcCollision(a, b)
-                    // because we adjusted time backward dt we need to move time forward dt
-                    adjustPosition(a, b, 1)
-                    handleInfecting(a, b)
+                if (triangleDistanceFilter(a,b)) {
+                    if (distance(a, b) <= a.radius + b.radius) {
+                        collisionCounter++
+                        // collision probably happened dt before distance(A, B) == A.radius + B.radius
+                        // so we adjust the distance between center of the two humans -dt time
+                        adjustPosition(a, b, -1)
+                        // calc new velocities
+                        calcCollision(a, b)
+                        // because we adjusted time backward dt we need to move time forward dt
+                        adjustPosition(a, b, 1)
+                        handleInfecting(a, b)
+                    }
                 }
             }
         }
+    }
+
+    fun triangleDistanceFilter(a: Human, b: Human): Boolean {
+        val distance: Double = a.radius + b.radius
+        if ((abs(a.x - b.x) > distance) || (abs(a.y - b.y) > distance)) {
+            return false
+        }
+        return true
     }
 
     private fun handleInfecting(a: Human, b: Human) {
@@ -212,7 +222,8 @@ class InfectionWorld(
             }
         }
     }
-    fun generateRandomDirectionAndSpeed(human:Human){
+
+    fun generateRandomDirectionAndSpeed(human: Human) {
         val dx = Random.nextDouble(-1.0, 1.0) * 5
         val dy = Random.nextDouble(-1.0, 1.0) * 5
         human.dx = dx * Random.nextDouble(1.0, 9.0)
@@ -221,12 +232,12 @@ class InfectionWorld(
         human.fy = dy
     }
 
-    var infectedHistory:ArrayList<Int> = ArrayList()
-    var immuneHistory:ArrayList<Int> = ArrayList()
-    var healthyHistory:ArrayList<Int> = ArrayList()
-    private fun updateHistoricData(){
+    var infectedHistory: ArrayList<Int> = ArrayList()
+    var immuneHistory: ArrayList<Int> = ArrayList()
+    var healthyHistory: ArrayList<Int> = ArrayList()
+    private fun updateHistoricData() {
         val index = totalTime.toInt()
-        if (infectedHistory.size < index){
+        if (infectedHistory.size < index) {
             infectedHistory.add(infected)
             immuneHistory.add(immune)
             healthyHistory.add(humans.size - infected - immune)
